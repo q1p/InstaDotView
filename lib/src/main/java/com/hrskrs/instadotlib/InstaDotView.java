@@ -37,6 +37,8 @@ public class InstaDotView extends View {
     private int posY = 0;
     private int previousPage = 0;
     private int currentPage = 0;
+    private int indexWindowStart = 0;
+    private int indexWindowEnd = 0;
 
     private ValueAnimator translationAnim;
 
@@ -133,6 +135,8 @@ public class InstaDotView extends View {
             Dot.State state;
 
             if (noOfPages > visibleDotCounts) {
+                indexWindowStart = 0;
+                indexWindowEnd = visibleDotCounts - 1;
                 if (i == getVisibleDotCounts() - 1) state = Dot.State.SMALL;
                 else if (i == getVisibleDotCounts() - 2) state = Dot.State.MEDIUM;
                 else state = i == 0 ? Dot.State.ACTIVE : Dot.State.INACTIVE;
@@ -303,42 +307,39 @@ public class InstaDotView extends View {
             }
         }
 
+        calcIndexWindow(lastActiveIndex, previousPage);
+
         int rangeStart = 0;
         boolean animateAddLeft = false;
         if (currentPage >= 2) {
-            dotsList.get(0).setState(Dot.State.SMALL);
-            dotsList.get(1).setState(Dot.State.MEDIUM);
             rangeStart = 2;
             animateAddLeft = true;
         } else if (currentPage == 1) {
-            dotsList.get(0).setState(Dot.State.MEDIUM);
-            dotsList.get(1).setState(Dot.State.INACTIVE);
             rangeStart = 1;
         }
 
         int rangeEnd = getVisibleDotCounts();
-        boolean animateAddRiht = false;
+        boolean animateAddRight = false;
         if (getNoOfPages() - currentPage >= 3) {
-            dotsList.get(dotsList.size() - 1).setState(Dot.State.SMALL);
-            dotsList.get(dotsList.size() - 2).setState(Dot.State.MEDIUM);
             rangeEnd = getVisibleDotCounts() - 2;
-            animateAddRiht = true;
+            animateAddRight = true;
         } else if (getNoOfPages() - currentPage == 2) {
-            dotsList.get(dotsList.size() - 1).setState(Dot.State.MEDIUM);
-            dotsList.get(dotsList.size() - 2).setState(Dot.State.INACTIVE);
             rangeEnd = getVisibleDotCounts() - 1;
         }
+
         int offset = currentPage - previousPage;
         int newActiveIndex;
         if (offset > 0) {
             newActiveIndex = Math.min(lastActiveIndex + offset, rangeEnd - 1);
-            if (animateAddRiht && newActiveIndex == lastActiveIndex) {
+            updateEdges(newActiveIndex);
+            if (animateAddRight && newActiveIndex == lastActiveIndex) {
                 removeAddRight(newActiveIndex);
             } else {
                 dotsList.get(newActiveIndex).setState(Dot.State.ACTIVE);
             }
         } else {
             newActiveIndex = Math.max(lastActiveIndex + offset, rangeStart);
+            updateEdges(newActiveIndex);
             if (animateAddLeft && newActiveIndex == lastActiveIndex) {
                 removeAddLeft(newActiveIndex);
             } else {
@@ -347,6 +348,44 @@ public class InstaDotView extends View {
         }
         invalidate();
 
+    }
+
+    private void updateEdges(int newActiveIndex) {
+        calcIndexWindow(newActiveIndex, currentPage);
+
+        updateLeftEdge();
+        updateRightEdge();
+    }
+
+    private void updateRightEdge() {
+        if (getNoOfPages() - indexWindowEnd > 2) {
+            dotsList.get(dotsList.size() - 1).setState(Dot.State.SMALL);
+            dotsList.get(dotsList.size() - 2).setState(Dot.State.MEDIUM);
+        } else if (getNoOfPages() - indexWindowEnd == 2) {
+            dotsList.get(dotsList.size() - 1).setState(Dot.State.MEDIUM);
+            dotsList.get(dotsList.size() - 2).setState(Dot.State.INACTIVE);
+        } else {
+            dotsList.get(dotsList.size() - 1).setState(Dot.State.INACTIVE);
+            dotsList.get(dotsList.size() - 2).setState(Dot.State.INACTIVE);
+        }
+    }
+
+    private void updateLeftEdge() {
+        if (indexWindowStart >= 2) {
+            dotsList.get(0).setState(Dot.State.SMALL);
+            dotsList.get(1).setState(Dot.State.MEDIUM);
+        } else if (indexWindowStart == 1) {
+            dotsList.get(0).setState(Dot.State.MEDIUM);
+            dotsList.get(1).setState(Dot.State.INACTIVE);
+        } else {
+            dotsList.get(0).setState(Dot.State.INACTIVE);
+            dotsList.get(1).setState(Dot.State.INACTIVE);
+        }
+    }
+
+    private void calcIndexWindow(int dotIndex, int pageIndex) {
+        indexWindowStart = pageIndex - dotIndex;
+        indexWindowEnd = getVisibleDotCounts() + indexWindowStart - 1;
     }
 
     private void setupNormalDots() {
@@ -363,8 +402,7 @@ public class InstaDotView extends View {
         getTranslationAnimation(getStartPosX(), getSmallDotStartX(), new AnimationListener() {
             @Override
             public void onAnimationEnd() {
-                dotsList.get(0).setState(Dot.State.SMALL);
-                dotsList.get(1).setState(Dot.State.MEDIUM);
+                updateLeftEdge();
 
                 Dot newDot = new Dot();
                 newDot.setState(Dot.State.ACTIVE);
@@ -381,8 +419,7 @@ public class InstaDotView extends View {
         getTranslationAnimation(getStartPosX(), getSmallDotStartX(), new AnimationListener() {
             @Override
             public void onAnimationEnd() {
-                dotsList.get(dotsList.size() - 1).setState(Dot.State.SMALL);
-                dotsList.get(dotsList.size() - 2).setState(Dot.State.MEDIUM);
+                updateRightEdge();
 
                 Dot newDot = new Dot();
                 newDot.setState(Dot.State.ACTIVE);
