@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="8dp"
-    tools:context="com.hrskrs.instadotssample.MainActivity">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="8dp"
+              tools:context="com.hrskrs.instadotssample.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:hint="Visible dots"
-            android:inputType="number" />
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/item_size_edittext"
@@ -29,14 +29,14 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
             android:hint="No of Pages"
-            android:inputType="number" />
+            android:inputType="number"/>
 
         <Button
             android:id="@+id/updatebtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="UPDATE" />
+            android:text="UPDATE"/>
 
     </LinearLayout>
 
@@ -50,7 +50,8 @@
         app:dot_inactiveSize="8dp"
         app:dot_margin="10dp"
         app:dot_mediumSize="6dp"
-        app:dot_smallSize="4dp" />
+        app:dot_smallSize="4dp"
+        app:dots_visible="7"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,14 +64,14 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="-" />
+            android:text="-"/>
 
         <Button
             android:id="@+id/increase_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="+" />
+            android:text="+"/>
 
     </LinearLayout>
 
@@ -80,6 +81,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="0"
-        android:textSize="24sp" />
+        android:textSize="24sp"/>
+
+    <Button
+        android:id="@+id/bt_jump"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Jump to random index"/>
 
 </LinearLayout>

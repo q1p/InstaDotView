@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.hrskrs.instadotlib.InstaDotView;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
 
     private int page = -1;
@@ -25,9 +27,11 @@ public class MainActivity extends AppCompatActivity {
         final InstaDotView instaDotView = findViewById(R.id.instadot);
         final EditText visibleDots = findViewById(R.id.visible_dots_edittext);
         final EditText itemSize = findViewById(R.id.item_size_edittext);
+        Button btJump = findViewById(R.id.bt_jump);
         Button updateVisibleDots = findViewById(R.id.updatebtn);
 
         instaDotView.setNoOfPages(20);
+        instaDotView.setVisibleDotCounts(7);
         updateVisibleDots.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
                     instaDotView.setNoOfPages(Integer.parseInt(itemSize.getText().toString()));
 
                 page = 0;
-                counter.setText(page + "");
+                counter.setText(String.valueOf(page));
             }
         });
 
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 page++;
                 if (page > instaDotView.getNoOfPages() - 1) page = instaDotView.getNoOfPages() - 1;
-                counter.setText(page + "");
+                counter.setText(String.valueOf(page));
                 instaDotView.onPageChange(page);
             }
         });
@@ -56,8 +60,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 page--;
                 if (page < 0) page = 0;
-                counter.setText(page + "");
+                counter.setText(String.valueOf(page));
                 instaDotView.onPageChange(page);
+            }
+        });
+
+        btJump.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                page = new Random().nextInt(instaDotView.getNoOfPages());
+                instaDotView.onPageChange(page);
+                counter.setText(">" + page + "<");
             }
         });
     }
