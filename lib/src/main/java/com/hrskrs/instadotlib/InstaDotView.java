@@ -233,6 +233,10 @@ public class InstaDotView extends View {
     }
 
     private void recreate() {
+        currentPage = 0;
+        previousPage = 0;
+        indexWindowStart = 0;
+        indexWindowEnd = 0;
         initCircles();
         requestLayout();
         invalidate();
